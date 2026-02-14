@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://c3m5n8p2q4r6s"]
+
+[ext_resource type="Script" path="res://scripts/weapons/fireball.gd" id="1"]
+
+[node name="Fireball" type="Node2D"]
+script = ExtResource("1")
+fire_rate = 1.0
+projectile_speed = 300.0
+damage = 15.0
+projectile_count = 1
+pierce = 1

@@ -1,0 +1,11 @@
+[gd_scene load_steps=2 format=3 uid="uid://n2v4w8y1z3a5c"]
+
+[ext_resource type="Script" path="res://scripts/ui/damage_number.gd" id="1"]
+
+[node name="DamageNumber" type="Label"]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "999"
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("1")

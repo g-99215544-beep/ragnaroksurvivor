@@ -1,0 +1,59 @@
+[gd_scene format=3 uid="uid://dpvxg8kqxm7bc"]
+
+[ext_resource type="Script" uid="uid://c5kham6snvrvm" path="res://scripts/enemy.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://bqw8h3v7jx4k2" path="res://sprites/poring.png" id="2"]
+[ext_resource type="Script" uid="uid://cbsibe5xfry5c" path="res://scripts/ui/hp_bar.gd" id="3"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 6.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
+radius = 16.0
+
+[node name="Poring" type="CharacterBody2D" unique_id=369549772]
+collision_layer = 2
+script = ExtResource("1")
+speed = 60.0
+max_health = 25.0
+health = 25.0
+contact_damage = 8.0
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=545982584]
+sprite_frames = SubResource("SpriteFrames_1")
+animation = &"idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=820117712]
+shape = SubResource("CircleShape2D_1")
+
+[node name="HPBar" type="ProgressBar" parent="." unique_id=1792629332]
+offset_left = -16.0
+offset_top = 18.0
+offset_right = 16.0
+offset_bottom = 22.0
+max_value = 25.0
+value = 25.0
+show_percentage = false
+script = ExtResource("3")
+
+[node name="HurtBox" type="Area2D" parent="." unique_id=1380394815]
+collision_layer = 2
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox" unique_id=245633948]
+shape = SubResource("CircleShape2D_1")

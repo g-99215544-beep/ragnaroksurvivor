@@ -1,0 +1,60 @@
+[gd_scene format=3 uid="uid://c8f4wqxkmam3n"]
+
+[ext_resource type="Script" uid="uid://c5kham6snvrvm" path="res://scripts/enemy.gd" id="1"]
+[ext_resource type="Texture2D" uid="uid://u06pqsknvd5i" path="res://sprites/lunatic.png" id="2"]
+[ext_resource type="Script" uid="uid://cbsibe5xfry5c" path="res://scripts/ui/hp_bar.gd" id="3"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_1"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 8.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_1"]
+radius = 14.0
+
+[node name="Lunatic" type="CharacterBody2D" unique_id=1770981821]
+collision_layer = 2
+script = ExtResource("1")
+speed = 90.0
+max_health = 20.0
+health = 20.0
+damage = 7.0
+exp_value = 2
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=231634610]
+sprite_frames = SubResource("SpriteFrames_1")
+animation = &"idle"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1934652463]
+shape = SubResource("CircleShape2D_1")
+
+[node name="HPBar" type="ProgressBar" parent="." unique_id=155495357]
+offset_left = -14.0
+offset_top = 16.0
+offset_right = 14.0
+offset_bottom = 20.0
+max_value = 20.0
+value = 20.0
+show_percentage = false
+script = ExtResource("3")
+
+[node name="HurtBox" type="Area2D" parent="." unique_id=1685840583]
+collision_layer = 2
+collision_mask = 4
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="HurtBox" unique_id=296759931]
+shape = SubResource("CircleShape2D_1")
