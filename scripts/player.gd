@@ -14,6 +14,7 @@ var weapons = []
 var passive_items = []
 var damage_cooldown = 0.5
 var can_take_damage = true
+var overlapping_enemies = []
 
 signal health_changed(new_health, max_health)
 signal experience_gained(exp, total_exp, needed_exp)
@@ -36,24 +37,26 @@ func _physics_process(delta):
 	input_vector.x = Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
 	input_vector.y = Input.get_action_strength("move_down") - Input.get_action_strength("move_up")
 	input_vector = input_vector.normalized()
-	
-	velocity = input_vector * speed
+
+	# Slow down when overlapping enemies
+	var speed_multiplier = 0.6 if overlapping_enemies.size() > 0 else 1.0
+	velocity = input_vector * speed * speed_multiplier
 	move_and_slide()
-	
-	# Check for enemy collision (contact damage)
-	if can_take_damage:
-		for i in get_slide_collision_count():
-			var collision = get_slide_collision(i)
-			var collider = collision.get_collider()
-			if collider and collider.is_in_group("enemy"):
-				var damage_amount = 10.0
-				if "contact_damage" in collider:
-					damage_amount = collider.contact_damage
-				take_damage(damage_amount)
-				can_take_damage = false
-				get_tree().create_timer(damage_cooldown).timeout.connect(func(): can_take_damage = true)
-				break
-	
+
+	# Contact damage from overlapping enemies
+	if can_take_damage and overlapping_enemies.size() > 0:
+		var enemy = overlapping_enemies[0]
+		if is_instance_valid(enemy):
+			var damage_amount = 10.0
+			if "contact_damage" in enemy:
+				damage_amount = enemy.contact_damage
+			take_damage(damage_amount)
+			can_take_damage = false
+			get_tree().create_timer(damage_cooldown).timeout.connect(func(): can_take_damage = true)
+
+	# Clean up freed enemies
+	overlapping_enemies = overlapping_enemies.filter(func(e): return is_instance_valid(e))
+
 	# Update animation
 	update_animation(input_vector)
 
@@ -161,3 +164,10 @@ func _on_pickup_area_body_entered(body):
 func _on_hurt_box_area_entered(area):
 	if area.is_in_group("enemy_attack"):
 		take_damage(area.damage)
+
+func _on_hurt_box_body_entered(body):
+	if body.is_in_group("enemy"):
+		overlapping_enemies.append(body)
+
+func _on_hurt_box_body_exited(body):
+	overlapping_enemies.erase(body)
