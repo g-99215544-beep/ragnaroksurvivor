@@ -33,6 +33,26 @@ exp_gem.exp_value = 1  # Hardcoded, ignores the enemy's @export exp_value
 ```
 The enemy has `@export var exp_value = 1` but `die()` hardcodes the gem to 1 instead of using `self.exp_value`. Lunatics (set to 2 XP in the scene) only drop 1 XP gems.
 
+### 5. Pickup Range upgrade makes player invincible (CRITICAL)
+**Files:** `scenes/player.tscn:26-27,38,54,61` and `scripts/player.gd:150`
+
+All three collision shapes in the player scene share the **same** `CircleShape2D` resource (`CircleShape2D_1`):
+- Player's main collision (line 38)
+- HurtBox collision (line 54)
+- PickupArea collision (line 61)
+
+When `player.gd:150` does `collision_shape.shape.radius = pickup_range`, it modifies the shared resource, which simultaneously:
+- ✅ Increases PickupArea (intended)
+- ❌ **Increases player's main hitbox → enemies can't reach the player**
+- ❌ Increases HurtBox → enemies damage from farther away
+
+**Fix:** Create separate CircleShape2D subresources for each collision shape, OR create a new shape in code:
+```gdscript
+var new_shape = CircleShape2D.new()
+new_shape.radius = pickup_range
+collision_shape.shape = new_shape
+```
+
 ## Design Issues
 
 ### 5. Dual pause state tracking
@@ -102,9 +122,9 @@ Damage cooldown `0.5`, gravity `100`, spawn distance `350`, health potion drop r
 
 | Category | Count |
 |----------|-------|
-| Bugs | 4 |
+| Bugs | 5 |
 | Design issues | 5 |
 | Performance | 3 |
 | Minor/Style | 3 |
 
-The most impactful bugs to fix are **#1** (projectile cull distance from origin) and **#4** (enemy `exp_value` ignored). The codebase is well-organized with clean separation of concerns and is easy to extend with new weapon/enemy types.
+The most impactful bug to fix is **#5** (pickup range upgrade makes player invincible by expanding the main collision hitbox). Bugs **#1** (projectile cull from origin) and **#4** (enemy `exp_value` ignored) also affect gameplay correctness. The codebase is well-organized with clean separation of concerns and is easy to extend with new weapon/enemy types.
