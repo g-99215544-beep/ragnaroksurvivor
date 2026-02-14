@@ -141,13 +141,18 @@ func upgrade_stat(stat_name, value):
 			speed += value
 		"damage":
 			base_damage += value
+			for weapon in weapons:
+				if "damage" in weapon:
+					weapon.damage += value
 		"pickup_range":
 			pickup_range += value
 			var pickup_area = get_node_or_null("PickupArea")
 			if pickup_area:
 				var collision_shape = pickup_area.get_node_or_null("CollisionShape2D")
-				if collision_shape and collision_shape.shape is CircleShape2D:
-					collision_shape.shape.radius = pickup_range
+				if collision_shape:
+					var new_shape = CircleShape2D.new()
+					new_shape.radius = pickup_range
+					collision_shape.shape = new_shape
 
 func _on_pickup_area_body_entered(body):
 	if body.is_in_group("pickup"):
