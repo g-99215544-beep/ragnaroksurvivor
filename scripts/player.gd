@@ -9,6 +9,7 @@ extends CharacterBody2D
 var level = 1
 var experience = 0
 var experience_to_next_level = 3
+var job_class = "mage"
 
 var weapons = []
 var passive_items = []
@@ -19,6 +20,7 @@ var overlapping_enemies = []
 signal health_changed(new_health, max_health)
 signal experience_gained(exp, total_exp, needed_exp)
 signal player_leveled_up(new_level)
+signal job_changed(new_job)
 signal died
 
 func _ready():
@@ -121,11 +123,30 @@ func level_up():
 	level += 1
 	experience -= experience_to_next_level
 	experience_to_next_level = level + 2
-	
+
 	# Heal on level up
 	heal(max_health * 0.3)
-	
+
+	# 5% damage increase per level
+	for weapon in weapons:
+		if "damage" in weapon:
+			weapon.damage *= 1.05
+	base_damage *= 1.05
+
+	# Job change at level 15
+	if level == 15 and job_class == "mage":
+		job_change()
+
 	player_leveled_up.emit(level)
+
+func job_change():
+	job_class = "wizard"
+	# Stat boost on job change
+	max_health += 50
+	health += 50
+	health_changed.emit(health, max_health)
+	speed += 10
+	job_changed.emit(job_class)
 
 func add_weapon(weapon_name):
 	var weapon_scene = load("res://scenes/weapons/" + weapon_name + ".tscn")

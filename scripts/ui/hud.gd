@@ -15,7 +15,8 @@ func _ready():
 		player.health_changed.connect(_on_health_changed)
 		player.experience_gained.connect(_on_experience_gained)
 		player.player_leveled_up.connect(_on_level_up)
-		
+		player.job_changed.connect(_on_job_changed)
+
 		# Initialize displays
 		_on_health_changed(player.health, player.max_health)
 		_on_level_up(player.level)
@@ -49,6 +50,14 @@ func _on_experience_gained(current_exp, total_exp, needed_exp):
 func _on_level_up(new_level):
 	if not level_label:
 		return
-	level_label.text = "Level: %d" % new_level
+	var job = "Mage"
+	if player and is_instance_valid(player):
+		job = player.job_class.capitalize()
+	level_label.text = "%s Lv.%d" % [job, new_level]
 	if exp_bar:
 		exp_bar.value = 0
+
+func _on_job_changed(new_job):
+	if not level_label or not player:
+		return
+	level_label.text = "%s Lv.%d" % [new_job.capitalize(), player.level]

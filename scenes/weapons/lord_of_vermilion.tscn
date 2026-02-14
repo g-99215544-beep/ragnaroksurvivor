@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://e5f6g7h8i9j0k"]
+
+[ext_resource type="Script" path="res://scripts/weapons/lord_of_vermilion.gd" id="1"]
+
+[node name="LordOfVermilion" type="Node2D"]
+script = ExtResource("1")
+fire_rate = 0.15
+damage = 45.0
+radius = 200.0
+strike_count = 5

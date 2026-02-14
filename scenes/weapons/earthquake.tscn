@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://d4e5f6g7h8i9j"]
+
+[ext_resource type="Script" path="res://scripts/weapons/earthquake.gd" id="1"]
+
+[node name="Earthquake" type="Node2D"]
+script = ExtResource("1")
+fire_rate = 0.2
+damage = 35.0
+radius = 180.0
+wave_count = 3
